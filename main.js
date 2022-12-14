@@ -1,7 +1,7 @@
 'use strict'
 const SPEED = 300 // px/s
-const SCROLL_SPEED = 200
-var GATE_INTERVAL = 300
+let SCROLL_SPEED = 200
+const GATE_INTERVAL = 300
 
 var app = new Vue({
     el: '#app',
@@ -36,7 +36,7 @@ var app = new Vue({
     },
     beforeDestroy() {
         window.removeEventListener("keydown", this.keyDownHandler)
-        window.removeEventListener("keydown", this.keyDownHandler)
+        window.removeEventListener("keyup", this.keyUpHandler)
     },
     methods: {
         setDrone() {
@@ -57,6 +57,9 @@ var app = new Vue({
         },
         right() {
             this.drone.speed.hSpeed = SPEED
+        },
+        press() {
+            this.isStarted = true
         },
         stop({ vertical, horizontal }) {
             if (vertical) {
@@ -87,6 +90,9 @@ var app = new Vue({
             if (e.code === "ArrowRight" || e.code === "ArrowLeft") {
                 this.stop({ horizontal: true })
             }
+            if (e.code === 'Space') {
+                this.restart()
+            }
         },
         checkin(dronePosLeft, dronePosTop) {
             for (var i = 0; i < this.gates.length; i++) {
@@ -105,12 +111,23 @@ var app = new Vue({
             }
         },
         upLevel() {
-            if (this.score >= 10)
-                GATE_INTERVAL = 270
-            if (this.score >= 20)
-                GATE_INTERVAL = 240
-            if (this.score >= 40)
-                GATE_INTERVAL = 180
+            switch (this.score) {
+                case 10:
+                    SCROLL_SPEED = 250
+                    break;
+                case 20:
+                    SCROLL_SPEED = 300
+                    break;
+                case 30:
+                    SCROLL_SPEED = 330
+                    break;
+                case 40:
+                    SCROLL_SPEED = 360
+                    break;
+                case 50:
+                    SCROLL_SPEED = 390
+                    break;
+            }
         },
         gameLoop(timestamp) {
             const dT = timestamp - this.previousTimestamp
@@ -167,6 +184,7 @@ var app = new Vue({
             this.score = 0
             this.gates = []
             this.setDrone()
+            SCROLL_SPEED = 200
         }
     }
 })

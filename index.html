@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<link href="assets/img/favicon.png" rel="icon">
 
 <head>
     <meta charset="UTF-8">
@@ -22,8 +21,8 @@
             <div>score: {{score}}</div>
             <!-- <img class="flag" src="assets/flag.svg" > -->
             <div class="ui_lost-screen">
-                <div v-if="isLost"><img class="disqual_pic" src="assets/disqualified.png"></div>
-                <button v-if="!isStarted" @click="restart">START</button>
+                <img v-if="isLost" class="disqual_pic" src="assets/disqualified.png">
+                <button class="start-button" v-if="!isStarted" @click="restart">START</button>
             </div>
         </div>
         <div class="stage" ref="stage">

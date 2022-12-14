@@ -8,22 +8,27 @@ body {
 }
 
 #app {
+    position: relative;
     height: 100%;
-    width: 390px;
+    max-width: 500px;
     flex-direction: column;
     background-color: rgba(50, 178, 253, 0.914);
+    margin: 0 auto;
 }
 
 .ui {
     z-index: 10;
     position: absolute;
     height: 100%;
-    width: 390px;
+    width: 100%;
+    max-width: 500px;
 }
 
 .ui_lost-screen {
     position: relative;
-    display: inline-grid;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -52,7 +57,6 @@ body {
 
 .disqual_pic {
     width: 40vh;
-    height: 20vw;
 }
 
 .spin {

@@ -18,14 +18,14 @@
 <body>
     <div id="app">
         <div class="ui">
-            <div>score: {{score}}</div>
+            <div class="score">score: {{score}}</div>
             <!-- <img class="flag" src="assets/flag.svg" > -->
             <div class="ui_lost-screen">
                 <img v-if="isLost" class="disqual_pic" src="assets/disqualified.png">
                 <button class="start-button" v-if="!isStarted" @click="restart">START</button>
             </div>
         </div>
-        <div class="stage" ref="stage">
+        <div class="stage" ref="stage" :style="{ filter: !isStarted ? 'blur(4px)' : '' }">
             <img ref="drone" class="drone" src="assets/drone.svg"
                 v-bind:style="{top: drone.pos.top+'px', left: drone.pos.left+'px'}">
 

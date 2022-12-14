@@ -7,6 +7,13 @@ body {
     overflow: hidden;
 }
 
+button {
+    font: inherit;
+    background: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+}
+
 #app {
     position: relative;
     height: 100%;
@@ -55,8 +62,14 @@ body {
     height: 40px;
 }
 
+.score {
+    margin: 16px;
+}
+
 .disqual_pic {
     width: 40vh;
+    pointer-events: none;
+    user-select: none;
 }
 
 .spin {

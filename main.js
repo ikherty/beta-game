@@ -11,6 +11,10 @@ var app = new Vue({
         previousTimestamp: 0,
         isStarted: false,
         isLost: false,
+        gate: {
+            width: 0,
+            height: 0
+        },
         drone: {
             pos: {
                 top: 0,
@@ -32,6 +36,10 @@ var app = new Vue({
         window.requestAnimationFrame(this.gameLoop)
     },
     mounted() {
+        const {width: gateWidth, height: gateHeight} = this.$refs.gate.getBoundingClientRect()
+        this.gate.width = gateWidth;
+        this.gate.height = gateHeight;
+
         this.setDrone()
     },
     beforeDestroy() {
@@ -100,9 +108,9 @@ var app = new Vue({
                 const droneHorCenter = dronePosLeft + this.$refs.drone.offsetWidth / 2
                 const droneVertCenter = dronePosTop + this.$refs.drone.offsetHeight / 2
                 if ((droneHorCenter >= gate.left) &&
-                    (droneHorCenter <= gate.left + this.$refs.gate.offsetWidth) &&
+                    (droneHorCenter <= gate.left + this.gate.width) &&
                     (gate.top <= droneVertCenter) &&
-                    (gate.top + this.$refs.gate.offsetHeight >= droneVertCenter) &&
+                    (gate.top + this.gate.height >= droneVertCenter) &&
                     (!gate.checked)) {
                     this.score++
                     gate.checked = true
@@ -175,8 +183,8 @@ var app = new Vue({
             return param
         },
         spawnGate() {
-            const maxX = this.$refs.stage.offsetWidth - this.$refs.gate.offsetWidth;
-            return { top: -this.$refs.gate.offsetHeight, left: Math.random() * maxX, checked: false }
+            const maxX = this.$refs.stage.offsetWidth - this.gate.width;
+            return { top: -this.gate.height, left: Math.random() * maxX, checked: false }
         },
         restart() {
             this.isStarted = true

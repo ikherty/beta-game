@@ -31,6 +31,11 @@
             position: absolute;
             width: 60px;
             height: 60px;
+            transform: scaleX(1.5);
+        }
+
+        .flag {
+            width: 15px;
         }
 
         .drone {
@@ -57,6 +62,10 @@
 
 <body>
     <div id="app">
+        <!-- <img class="flag" src="assets/flag.svg" > -->
+        <div v-if="!isStarted">
+            "ПОТРАЧЕНО"
+        </div>
         <div class="stage" ref="stage">
             <img ref="drone" class="drone" src="assets/drone.svg"
                 v-bind:style="{top: drone.pos.top+'px', left: drone.pos.left+'px'}">
@@ -67,13 +76,15 @@
                 </div>
             </div>
             <img class="gate" ref="gate" src="assets/gate.svg" style="position: absolute; left: -1000px">
+
         </div>
     </div>
 </body>
 <script>
+    'use strict'
     const SPEED = 300 // px/s
     const SCROLL_SPEED = 200
-    const GATE_INTERVAL = 150
+    const GATE_INTERVAL = 300
 
     var app = new Vue({
         el: '#app',
@@ -81,6 +92,7 @@
             totalScroll: 0,
             lastGateSpawned: 0,
             previousTimestamp: 0,
+            isStarted: true,
             gate: {
                 height: 0,
                 width: 0
@@ -95,8 +107,9 @@
                     hSpeed: 0
                 }
             },
-            // type Hoop = { top: number, left: number }
-            gates: []
+            // type Gate = { top: number, left: number, checked:boolean }
+            gates: [],
+            score: 0
         },
         created() {
             window.addEventListener("keydown", this.keyDownHandler)
@@ -161,7 +174,28 @@
                     this.stop({ horizontal: true })
                 }
             },
+            checkin(dronePosLeft, dronePosTop) {
+
+                for (var i = 0; i < this.gates.length; i++) {
+                    const gate = this.gates[i]
+                    const droneHorCenter = dronePosLeft + this.$refs.drone.offsetWidth / 2
+                    const droneVertCenter = dronePosTop + this.$refs.drone.offsetHeight / 2
+                    if ((droneHorCenter >= gate.left) &&
+                        (droneHorCenter <= gate.left + this.$refs.gate.offsetWidth) &&
+                        (gate.top <= droneVertCenter) &&
+                        (gate.top + this.$refs.gate.offsetHeight >= droneVertCenter) &&
+                        (!gate.checked)) {
+                        this.score++
+                        gate.checked = true
+                        console.log('score:', this.score)
+                    }
+                }
+            },
             gameLoop(timestamp) {
+
+                if (!this.isStarted) {
+                    return
+                }
                 // console.log('this.drone.speed.vSpeed', this.drone.speed.vSpeed)
                 const dT = timestamp - this.previousTimestamp
                 const dX = dT / 1000 * this.drone.speed.hSpeed
@@ -178,22 +212,25 @@
                 }
 
                 if (this.gates.length > 0 && this.gates[0].top > this.$refs.stage.offsetHeight) {
-                    this.gates.shift()
+
+                    const shiftedGates = this.gates.shift()
+                    if (!shiftedGates.checked) {
+                        this.isStarted = false
+                    }
                 }
 
                 this.gates.forEach(element => {
                     element.top += dS
                 });
 
-                // console.log('dX', dX)
+                this.drone.pos.left = this.clamp(this.drone.pos.left + dX, 0, this.$refs.stage.offsetWidth - this.$refs.drone.offsetWidth)
+                this.drone.pos.top = this.clamp(this.drone.pos.top + dY, 0, this.$refs.stage.offsetHeight - this.$refs.drone.offsetHeight)
 
-                this.drone.pos.left = this.cap(this.drone.pos.left + dX, 0, this.$refs.stage.offsetWidth - this.$refs.drone.offsetWidth)
-                this.drone.pos.top = this.cap(this.drone.pos.top + dY, 0, this.$refs.stage.offsetHeight - this.$refs.drone.offsetHeight)
-
+                this.checkin(this.drone.pos.left, this.drone.pos.top)
                 this.previousTimestamp = timestamp
                 window.requestAnimationFrame(this.gameLoop)
             },
-            cap(param, min, max) {
+            clamp(param, min, max) {
                 if (param < min) return min
                 if (param > max) return max
                 return param
@@ -201,7 +238,7 @@
             spawnGate() {
                 const maxX = this.$refs.stage.offsetWidth - this.$refs.gate.offsetWidth;
 
-                return { top: 0, left: Math.random() * maxX }
+                return { top: 0, left: Math.random() * maxX, checked: false }
             }
         }
     })

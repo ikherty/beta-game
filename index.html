@@ -5,11 +5,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
 
     <title>Document</title>
     <style>
         body {
+            font-family: 'Zen Dots', cursive;
             height: 100vh;
             /* background-color: red; */
             position: relative;
@@ -21,6 +26,21 @@
             height: 100%;
             flex-direction: column;
             background-color: rgba(50, 178, 253, 0.914);
+        }
+
+        .ui {
+            z-index: 10;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+        }
+
+        .ui_lost-screen {
+            position: relative;
+            display: inline-block;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .stage {
@@ -43,7 +63,10 @@
             width: 40px;
             height: 40px;
         }
-
+        .restart_screen{
+            width: 60vh;
+            height: 30vw;
+        }
         .spin {
             animation: spin 1s ease-out 1;
         }
@@ -62,10 +85,14 @@
 
 <body>
     <div id="app">
-        <button v-if="!isStarted" @click="restart">START</button>
-        <!-- <img class="flag" src="assets/flag.svg" > -->
-        <div v-if="isLost">"ПОТРАЧЕНО"</div>
-        <div>"score:"  {{score}}</div>
+        <div class="ui">
+            <div>score: {{score}}</div>
+            <!-- <img class="flag" src="assets/flag.svg" > -->
+            <div class="ui_lost-screen">
+                    <div v-if="isLost"><img class="restart_screen" src="assets/disqualified.png"></div>
+                    <button v-if="!isStarted" @click="restart">START</button>
+            </div>
+        </div>
         <div class="stage" ref="stage">
             <img ref="drone" class="drone" src="assets/drone.svg"
                 v-bind:style="{top: drone.pos.top+'px', left: drone.pos.left+'px'}">

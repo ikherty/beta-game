@@ -36,7 +36,7 @@ var app = new Vue({
         window.requestAnimationFrame(this.gameLoop)
     },
     mounted() {
-        const {width: gateWidth, height: gateHeight} = this.$refs.gate.getBoundingClientRect()
+        const { width: gateWidth, height: gateHeight } = this.$refs.gate.getBoundingClientRect()
         this.gate.width = gateWidth;
         this.gate.height = gateHeight;
 

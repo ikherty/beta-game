@@ -74,6 +74,7 @@ button {
 }
 
 .score {
+    position: fixed;
     margin: 16px;
 }
 

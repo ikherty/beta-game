@@ -10,34 +10,35 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap" rel="stylesheet">
-
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
-
 </head>
 
 <body>
-    <div id="app">
-        <div class="ui">
-            <div class="score">score: {{score}}</div>
-            <!-- <img class="flag" src="assets/flag.svg" > -->
-            <div class="ui_lost-screen">
-                <img v-if="isLost" class="disqual_pic" src="assets/disqualified.png">
-                <button class="start-button" v-if="!isStarted" @click="restart">START</button>
-            </div>
+<div id="app">
+    <div class="ui">
+        <div class="score">score: {{score}}</div>
+        <div v-if="isStarted" class="controls">
+            <button class="control-button" @pointerup="moveDrone('left', true)" @pointerdown="moveDrone('left')"><</button>
+            <button class="control-button" @pointerup="moveDrone('right', true)" @pointerdown="moveDrone('right')">></button>
         </div>
-        <div class="stage" ref="stage" :style="{ filter: !isStarted ? 'blur(4px)' : '' }">
-            <img ref="drone" class="drone" src="assets/drone.svg"
-                v-bind:style="{top: drone.pos.top+'px', left: drone.pos.left+'px'}">
-
-            <div class="gates">
-                <div v-for="(gate, index) in gates" v-bind:key="index">
-                    <img class="gate" src="assets/gate.svg" v-bind:style="{top: gate.top+'px', left: gate.left+'px'}">
-                </div>
-            </div>
-            <img class="gate" ref="gate" src="assets/gate.svg" style="position: absolute; left: -1000px">
+        <div v-if="!isStarted" class="ui_lost-screen">
+            <img v-if="isLost" class="disqual_pic" src="assets/disqualified.png">
+            <button class="start-button" v-if="!isStarted" @click="restart">START</button>
         </div>
     </div>
-    <script src="main.js"></script>
+    <div class="stage" ref="stage" :style="{ filter: !isStarted ? 'blur(4px)' : '' }">
+        <img ref="drone" class="drone" src="assets/drone.svg"
+             v-bind:style="{top: drone.pos.top+'px', left: drone.pos.left+'px'}">
+
+        <div class="gates">
+            <div v-for="(gate, index) in gates" v-bind:key="index">
+                <img class="gate" src="assets/gate.svg" v-bind:style="{top: gate.top+'px', left: gate.left+'px'}">
+            </div>
+        </div>
+        <img class="gate" ref="gate" src="assets/gate.svg" style="position: absolute; left: -1000px">
+    </div>
+</div>
+<script src="main.js"></script>
 </body>
 
 </html>

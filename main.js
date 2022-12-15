@@ -56,6 +56,8 @@ const app = new Vue({
 
             this.drone.pos.top = hStage - hDrone - 60
             this.drone.pos.left = (wStage - wDrone) / 2
+            this.drone.speed.vSpeed = 0
+            this.drone.speed.hSpeed = 0
         },
         up() {
             this.drone.speed.vSpeed = -SPEED

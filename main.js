@@ -1,5 +1,5 @@
 'use strict'
-const SPEED = 300 // px/s
+let SPEED = 300 // px/s
 let SCROLL_SPEED = 200
 const GATE_INTERVAL = 300
 
@@ -90,6 +90,9 @@ var app = new Vue({
             if (e.code === "ArrowLeft") {
                 this.left()
             }
+            if (e.code === 'Space') {
+                this.restart()
+            }
         },
         keyUpHandler(e) {
             if (e.code === "ArrowUp" || e.code === "ArrowDown") {
@@ -97,9 +100,6 @@ var app = new Vue({
             }
             if (e.code === "ArrowRight" || e.code === "ArrowLeft") {
                 this.stop({ horizontal: true })
-            }
-            if (e.code === 'Space') {
-                this.restart()
             }
         },
         checkin(dronePosLeft, dronePosTop) {
@@ -114,7 +114,6 @@ var app = new Vue({
                     (!gate.checked)) {
                     this.score++
                     gate.checked = true
-                    console.log('score:', this.score)
                 }
             }
         },
@@ -125,12 +124,14 @@ var app = new Vue({
                     break;
                 case 20:
                     SCROLL_SPEED = 300
+                    SPEED = 350
                     break;
                 case 30:
                     SCROLL_SPEED = 330
                     break;
                 case 40:
                     SCROLL_SPEED = 360
+                    SPEED = 400
                     break;
                 case 50:
                     SCROLL_SPEED = 390

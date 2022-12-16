@@ -1,5 +1,6 @@
 'use strict'
-let SPEED = 300 // px/s
+const ACCELERATION = 4000 // px/s^2
+let DRONE_MAX_SPEED = 300 // px/s
 let SCROLL_SPEED = 200
 const GATE_INTERVAL = 300
 
@@ -21,8 +22,12 @@ const app = new Vue({
                 left: 0
             },
             speed: {
-                vSpeed: 0,
-                hSpeed: 0
+                vertical: 0,
+                horizontal: 0
+            },
+            acceleration: {
+                vertical: 0,
+                horizontal: 0
             }
         },
         // type Gate = { top: number, left: number, checked:boolean }
@@ -30,8 +35,9 @@ const app = new Vue({
         score: 0
     },
     created() {
-        window.addEventListener("keydown", this.keyDownHandler)
-        window.addEventListener("keyup", this.keyUpHandler)
+        window.addEventListener("keydown", this.startAccelerate)
+        window.addEventListener("keyup", this.stopAccelerate)
+        window.addEventListener("keyup", this.restartOnKeyPress)
 
         window.requestAnimationFrame(this.gameLoop)
     },
@@ -43,8 +49,9 @@ const app = new Vue({
         this.setDrone()
     },
     beforeDestroy() {
-        window.removeEventListener("keydown", this.keyDownHandler)
-        window.removeEventListener("keyup", this.keyUpHandler)
+        window.removeEventListener("keydown", this.startAccelerate)
+        window.removeEventListener("keyup", this.stopAccelerate)
+        window.removeEventListener("keyup", this.restartOnKeyPress)
     },
     methods: {
         templateLogger(...rest) {
@@ -56,72 +63,54 @@ const app = new Vue({
 
             this.drone.pos.top = hStage - hDrone - 60
             this.drone.pos.left = (wStage - wDrone) / 2
-            this.drone.speed.vSpeed = 0
-            this.drone.speed.hSpeed = 0
+            this.drone.speed.vertical = 0
+            this.drone.speed.horizontal = 0
+            this.drone.acceleration.vertical = 0
+            this.drone.acceleration.horizontal = 0
         },
-        up() {
-            this.drone.speed.vSpeed = -SPEED
+        up(stop = false) {
+            this.drone.acceleration.vertical = -Number(!stop)
         },
-        down() {
-            this.drone.speed.vSpeed = SPEED
+        down(stop = false) {
+            this.drone.acceleration.vertical = Number(!stop)
         },
-        left() {
-            this.drone.speed.hSpeed = -SPEED
+        left(stop = false) {
+            this.drone.acceleration.horizontal = -Number(!stop)
         },
-        right() {
-            this.drone.speed.hSpeed = SPEED
-        },
-        stop({ vertical, horizontal }) {
-            if (vertical) {
-                this.drone.speed.vSpeed = 0
-            }
-            if (horizontal) {
-                this.drone.speed.hSpeed = 0
-            }
+        right(stop = false) {
+            this.drone.acceleration.horizontal = Number(!stop)
         },
         moveDrone(direction, stop = false) {
-            if (stop) {
-                switch (direction) {
-                    case 'left':
-                    case 'right':
-                        return this.stop({ horizontal: true })
-                    case 'up':
-                    case 'down':
-                        return this.stop({ vertical: true })
-                }
-            }
             switch (direction) {
                 case 'left':
-                    return this.left()
+                    return this.left(stop)
                 case 'right':
-                    return this.right()
+                    return this.right(stop)
                 case 'up':
-                    return this.up()
+                    return this.up(stop)
                 case 'down':
-                    return this.down()
+                    return this.down(stop)
             }
         },
-        keyDownHandler(e) {
-            if (e.code === "ArrowUp") {
-                this.up()
-            }
-            if (e.code === "ArrowDown") {
-                this.down()
-            }
-            if (e.code === "ArrowRight") {
-                this.right()
-            }
-            if (e.code === "ArrowLeft") {
-                this.left()
+        moveDroneWithKeyboard(e, stop = false) {
+            switch (e.code) {
+                case "ArrowUp":
+                    return this.up(stop)
+                case "ArrowDown":
+                    return this.down(stop)
+                case "ArrowRight":
+                    return this.right(stop)
+                case "ArrowLeft":
+                    return this.left(stop)
             }
         },
-        keyUpHandler(e) {
-            if (e.code === "ArrowUp" || e.code === "ArrowDown") {
-                this.stop({ vertical: true })
-            }
-            if (e.code === "ArrowRight" || e.code === "ArrowLeft") {
-                this.stop({ horizontal: true })
-            }
+        startAccelerate(e) {
+            return this.moveDroneWithKeyboard(e)
+        },
+        stopAccelerate(e) {
+            return this.moveDroneWithKeyboard(e, true)
+        },
+        restartOnKeyPress(e) {
             if (e.code === 'Space') {
                 this.restart()
             }
@@ -148,14 +137,14 @@ const app = new Vue({
                     break;
                 case 20:
                     SCROLL_SPEED = 300
-                    SPEED = 350
+                    DRONE_MAX_SPEED = 350
                     break;
                 case 30:
                     SCROLL_SPEED = 330
                     break;
                 case 40:
                     SCROLL_SPEED = 360
-                    SPEED = 400
+                    DRONE_MAX_SPEED = 400
                     break;
                 case 50:
                     SCROLL_SPEED = 390
@@ -163,13 +152,26 @@ const app = new Vue({
             }
         },
         gameLoop(timestamp) {
-            const dT = timestamp - this.previousTimestamp
+            const dT = (timestamp - this.previousTimestamp) / 1000
 
             if (this.isStarted) {
-                const dX = dT / 1000 * this.drone.speed.hSpeed
-                const dY = dT / 1000 * this.drone.speed.vSpeed
+                const drone = this.drone;
 
-                const dS = dT / 1000 * SCROLL_SPEED
+                drone.speed.horizontal = this.clamp(
+                    drone.speed.horizontal + dT * ACCELERATION * drone.acceleration.horizontal,
+                    -DRONE_MAX_SPEED,
+                    DRONE_MAX_SPEED
+                )
+                drone.speed.vertical = this.clamp(
+                    drone.speed.vertical + dT * ACCELERATION * drone.acceleration.vertical,
+                    -DRONE_MAX_SPEED,
+                    DRONE_MAX_SPEED
+                )
+
+                const dX = dT * drone.speed.horizontal
+                const dY = dT * drone.speed.vertical
+
+                const dS = dT * SCROLL_SPEED
                 this.totalScroll += dS
 
                 if (this.totalScroll - this.lastGateSpawned > GATE_INTERVAL) {
@@ -192,10 +194,10 @@ const app = new Vue({
                     element.top += dS
                 });
 
-                this.drone.pos.left = this.clamp(this.drone.pos.left + dX, 0, this.$refs.stage.offsetWidth - this.$refs.drone.offsetWidth)
-                this.drone.pos.top = this.clamp(this.drone.pos.top + dY, 0, this.$refs.stage.offsetHeight - this.$refs.drone.offsetHeight)
+                drone.pos.left = this.clamp(drone.pos.left + dX, 0, this.$refs.stage.offsetWidth - this.$refs.drone.offsetWidth)
+                drone.pos.top = this.clamp(drone.pos.top + dY, 0, this.$refs.stage.offsetHeight - this.$refs.drone.offsetHeight)
 
-                this.checkin(this.drone.pos.left, this.drone.pos.top)
+                this.checkin(drone.pos.left, drone.pos.top)
                 this.upLevel()
             }
 
@@ -214,6 +216,17 @@ const app = new Vue({
                 left: Math.random() * maxX,
                 checked: false
             }
+        },
+        calculateSpeed(currentSpeed, accelerationDirection, dT) {
+            const accelerationFraction =
+                accelerationDirection !== 0
+                    ? accelerationDirection
+                    : Math.sign(-currentSpeed)
+
+            const newSpeed = currentSpeed + dT * ACCELERATION * accelerationFraction;
+            const v = accelerationDirection === 0 && Math.sign(newSpeed) !== Math.sign(currentSpeed) ? 0 : newSpeed
+
+            return this.clamp(v, -MAX_SPEED, MAX_SPEED)
         },
         restart() {
             this.isStarted = true

@@ -157,16 +157,8 @@ const app = new Vue({
             if (this.isStarted) {
                 const drone = this.drone;
 
-                drone.speed.horizontal = this.clamp(
-                    drone.speed.horizontal + dT * ACCELERATION * drone.acceleration.horizontal,
-                    -DRONE_MAX_SPEED,
-                    DRONE_MAX_SPEED
-                )
-                drone.speed.vertical = this.clamp(
-                    drone.speed.vertical + dT * ACCELERATION * drone.acceleration.vertical,
-                    -DRONE_MAX_SPEED,
-                    DRONE_MAX_SPEED
-                )
+                drone.speed.horizontal = this.calculateSpeed(drone.speed.horizontal, drone.acceleration.horizontal, dT);
+                drone.speed.vertical = this.calculateSpeed(drone.speed.vertical, drone.acceleration.vertical, dT);
 
                 const dX = dT * drone.speed.horizontal
                 const dY = dT * drone.speed.vertical
@@ -226,7 +218,7 @@ const app = new Vue({
             const newSpeed = currentSpeed + dT * ACCELERATION * accelerationFraction;
             const v = accelerationDirection === 0 && Math.sign(newSpeed) !== Math.sign(currentSpeed) ? 0 : newSpeed
 
-            return this.clamp(v, -MAX_SPEED, MAX_SPEED)
+            return this.clamp(v, -DRONE_MAX_SPEED, DRONE_MAX_SPEED)
         },
         restart() {
             this.isStarted = true

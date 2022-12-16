@@ -15,7 +15,7 @@
   <body>
     <div id="app">
       <div class="ui">
-        <div class="score">score: {{score}}</div>
+        <div class="score">score: {{ score }}</div>
         <div class="controls" v-if="isStarted">
           <button @pointerdown="moveDrone('left')" @pointerup="moveDrone('left', true)" class="control-button">
             <
@@ -34,12 +34,16 @@
           class="drone"
           ref="drone"
           src="assets/drone.svg"
-          v-bind:style="{top: drone.pos.top+'px', left: drone.pos.left+'px'}"
+          v-bind:style="{ top: drone.pos.top+'px', left: drone.pos.left+'px' }"
         />
 
-        <div class="gates">
-          <div v-bind:key="index" v-for="(gate, index) in gates">
-            <img class="gate" src="assets/gate.svg" v-bind:style="{top: gate.top+'px', left: gate.left+'px'}" />
+        <div class="obstacles">
+          <div v-bind:key="obstacle.id" v-for="(obstacle) in obstacles.list">
+            <img
+              :class="obstacle.type"
+              :src="`assets/${obstacle.type}.svg`"
+              v-bind:style="{ top: obstacle.top+'px', left: obstacle.left+'px' }"
+            />
           </div>
         </div>
       </div>

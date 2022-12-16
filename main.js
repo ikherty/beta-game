@@ -8,13 +8,22 @@ const app = new Vue({
   el: '#app',
   data: {
     totalScroll: 0,
-    lastGateSpawned: 0,
+    lastObstacleSpawned: 0,
     previousTimestamp: 0,
     isStarted: false,
     isLost: false,
-    gate: {
-      width: 0,
-      height: 0
+    obstacles: {
+      gate: {
+        width: 0,
+        height: 0
+      },
+      flag: {
+        width: 0,
+        height: 0
+      },
+      // type Obstacle = { type: 'gate' | 'flag', top: number, left: number, checked:boolean }
+      // type ObstacleList = Array<Obstacle>
+      list: []
     },
     drone: {
       pos: {
@@ -30,8 +39,6 @@ const app = new Vue({
         horizontal: 0
       }
     },
-    // type Gate = { top: number, left: number, checked:boolean }
-    gates: [],
     score: 0
   },
   created() {
@@ -42,9 +49,16 @@ const app = new Vue({
     window.requestAnimationFrame(this.gameLoop)
   },
   mounted() {
-    const { width: gateWidth, height: gateHeight } = this.$refs.gate.getBoundingClientRect()
-    this.gate.width = gateWidth
-    this.gate.height = gateHeight
+    const { gate: gateRef, flag: flagRef } = this.$refs
+    const { flag, gate } = this.obstacles
+
+    const { width: gateWidth, height: gateHeight } = gateRef.getBoundingClientRect()
+    gate.width = gateWidth
+    gate.height = gateHeight
+
+    const { width: flagWidth, height: flagHeight } = flagRef.getBoundingClientRect()
+    flag.width = flagWidth
+    flag.height = flagHeight
 
     this.setDrone()
   },
@@ -116,19 +130,29 @@ const app = new Vue({
       }
     },
     checkin(dronePosLeft, dronePosTop) {
-      for (let i = 0; i < this.gates.length; i++) {
-        const gate = this.gates[i]
-        const droneHorCenter = dronePosLeft + this.$refs.drone.offsetWidth / 2
-        const droneVertCenter = dronePosTop + this.$refs.drone.offsetHeight / 2
+      const obstaclesList = this.obstacles.list
+      for (let i = 0; i < obstaclesList.length; i++) {
+        const obstacle = obstaclesList[i]
+        const droneCenterHorizontal = dronePosLeft + this.$refs.drone.offsetWidth / 2
+        const droneCenterVertical = dronePosTop + this.$refs.drone.offsetHeight / 2
+
         if (
-          droneHorCenter >= gate.left &&
-          droneHorCenter <= gate.left + this.gate.width &&
-          gate.top <= droneVertCenter &&
-          gate.top + this.gate.height >= droneVertCenter &&
-          !gate.checked
+          droneCenterHorizontal >= obstacle.left &&
+          droneCenterHorizontal <= obstacle.left + this.obstacles[obstacle.type].width &&
+          obstacle.top <= droneCenterVertical &&
+          obstacle.top + this.obstacles[obstacle.type].height >= droneCenterVertical
         ) {
-          this.score++
-          gate.checked = true
+          switch (obstacle.type) {
+            case 'flag':
+              this.failGame()
+              break
+            case 'gate':
+              if (!obstacle.checked) {
+                this.score++
+                obstacle.checked = true
+              }
+              break
+          }
         }
       }
     },
@@ -168,22 +192,21 @@ const app = new Vue({
         const dS = dT * SCROLL_SPEED
         this.totalScroll += dS
 
-        if (this.totalScroll - this.lastGateSpawned > GATE_INTERVAL) {
-          if (this.gates.length < 10) {
-            this.gates.push(this.spawnGate())
-            this.lastGateSpawned = this.totalScroll
+        if (this.totalScroll - this.lastObstacleSpawned > GATE_INTERVAL) {
+          if (this.obstacles.list.length < 10) {
+            this.obstacles.list.push(this.spawnObstacle())
+            this.lastObstacleSpawned = this.totalScroll
           }
         }
 
-        if (this.gates.length > 0 && this.gates[0].top > this.$refs.stage.offsetHeight) {
-          const shiftedGates = this.gates.shift()
-          if (!shiftedGates.checked) {
-            this.isStarted = false
-            this.isLost = true
+        if (this.obstacles.list.length > 0 && this.obstacles.list[0].top > this.$refs.stage.offsetHeight) {
+          const shiftedObstacle = this.obstacles.list.shift()
+          if (shiftedObstacle.type === 'gate' && !shiftedObstacle.checked) {
+            this.failGame()
           }
         }
 
-        this.gates.forEach((element) => {
+        this.obstacles.list.forEach((element) => {
           element.top += dS
         })
 
@@ -202,13 +225,22 @@ const app = new Vue({
       if (param > max) return max
       return param
     },
-    spawnGate() {
-      const maxX = this.$refs.stage.offsetWidth - this.gate.width
+    spawnObstacle() {
+      const obstacleType = Math.random() > 0.5 ? 'gate' : 'flag'
+
+      const maxX = this.$refs.stage.offsetWidth - this.obstacles[obstacleType].width
+
       return {
-        top: -this.gate.height,
+        id: Date.now(),
+        type: obstacleType,
+        top: -this.obstacles[obstacleType].height,
         left: Math.random() * maxX,
         checked: false
       }
+    },
+    failGame() {
+      this.isStarted = false
+      this.isLost = true
     },
     calculateSpeed(currentSpeed, accelerationDirection, dT) {
       const accelerationFraction = accelerationDirection !== 0 ? accelerationDirection : Math.sign(-currentSpeed)
@@ -222,7 +254,7 @@ const app = new Vue({
       this.isStarted = true
       this.isLost = false
       this.score = 0
-      this.gates = []
+      this.obstacles.list = []
       SCROLL_SPEED = 200
       this.setDrone()
     }

@@ -62,20 +62,22 @@ button {
   left: -10000px;
 }
 
-.gate {
+.gate,
+.flag {
   position: absolute;
-  width: 60px;
-  height: 60px;
-  transform: scaleX(1.5);
   transform-origin: top left;
   pointer-events: none;
   user-select: none;
 }
 
+.gate {
+  width: 60px;
+  height: 60px;
+  transform: scaleX(1.5);
+}
+
 .flag {
   width: 15px;
-  pointer-events: none;
-  user-select: none;
 }
 
 .drone {

@@ -31,6 +31,16 @@ button {
     max-width: 500px;
 }
 
+.controls {
+    display: flex;
+    height: 100%;
+}
+
+.control-button {
+    flex: 1 0 auto;
+    opacity: 0;
+}
+
 .ui_lost-screen {
     position: relative;
     display: inline-flex;
@@ -64,6 +74,7 @@ button {
 }
 
 .score {
+    position: fixed;
     margin: 16px;
 }
 

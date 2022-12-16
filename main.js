@@ -3,7 +3,7 @@ let SPEED = 300 // px/s
 let SCROLL_SPEED = 200
 const GATE_INTERVAL = 300
 
-var app = new Vue({
+const app = new Vue({
     el: '#app',
     data: {
         totalScroll: 0,
@@ -47,12 +47,17 @@ var app = new Vue({
         window.removeEventListener("keyup", this.keyUpHandler)
     },
     methods: {
+        templateLogger(...rest) {
+            console.log(...rest)
+        },
         setDrone() {
             const { offsetHeight: hStage, offsetWidth: wStage } = this.$refs.stage;
             const { offsetHeight: hDrone, offsetWidth: wDrone } = this.$refs.drone;
 
             this.drone.pos.top = hStage - hDrone - 60
             this.drone.pos.left = (wStage - wDrone) / 2
+            this.drone.speed.vSpeed = 0
+            this.drone.speed.hSpeed = 0
         },
         up() {
             this.drone.speed.vSpeed = -SPEED
@@ -66,15 +71,34 @@ var app = new Vue({
         right() {
             this.drone.speed.hSpeed = SPEED
         },
-        press() {
-            this.isStarted = true
-        },
         stop({ vertical, horizontal }) {
             if (vertical) {
                 this.drone.speed.vSpeed = 0
             }
             if (horizontal) {
                 this.drone.speed.hSpeed = 0
+            }
+        },
+        moveDrone(direction, stop = false) {
+            if (stop) {
+                switch (direction) {
+                    case 'left':
+                    case 'right':
+                        return this.stop({ horizontal: true })
+                    case 'up':
+                    case 'down':
+                        return this.stop({ vertical: true })
+                }
+            }
+            switch (direction) {
+                case 'left':
+                    return this.left()
+                case 'right':
+                    return this.right()
+                case 'up':
+                    return this.up()
+                case 'down':
+                    return this.down()
             }
         },
         keyDownHandler(e) {
@@ -103,7 +127,7 @@ var app = new Vue({
             }
         },
         checkin(dronePosLeft, dronePosTop) {
-            for (var i = 0; i < this.gates.length; i++) {
+            for (let i = 0; i < this.gates.length; i++) {
                 const gate = this.gates[i]
                 const droneHorCenter = dronePosLeft + this.$refs.drone.offsetWidth / 2
                 const droneVertCenter = dronePosTop + this.$refs.drone.offsetHeight / 2
@@ -185,15 +209,19 @@ var app = new Vue({
         },
         spawnGate() {
             const maxX = this.$refs.stage.offsetWidth - this.gate.width;
-            return { top: -this.gate.height, left: Math.random() * maxX, checked: false }
+            return {
+                top: -this.gate.height,
+                left: Math.random() * maxX,
+                checked: false
+            }
         },
         restart() {
             this.isStarted = true
             this.isLost = false
             this.score = 0
             this.gates = []
-            this.setDrone()
             SCROLL_SPEED = 200
+            this.setDrone()
         }
     }
 })

@@ -114,9 +114,6 @@ const app = new Vue({
             if (e.code === "ArrowLeft") {
                 this.left()
             }
-            if (e.code === 'Space') {
-                this.restart()
-            }
         },
         keyUpHandler(e) {
             if (e.code === "ArrowUp" || e.code === "ArrowDown") {
@@ -124,6 +121,9 @@ const app = new Vue({
             }
             if (e.code === "ArrowRight" || e.code === "ArrowLeft") {
                 this.stop({ horizontal: true })
+            }
+            if (e.code === 'Space') {
+                this.restart()
             }
         },
         checkin(dronePosLeft, dronePosTop) {

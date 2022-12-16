@@ -1,105 +1,112 @@
 body {
-    font-family: 'Zen Dots', cursive;
-    height: 100vh;
-    /* background-color: red; */
-    position: relative;
-    margin: 0;
-    overflow: hidden;
+  font-family: 'Zen Dots', cursive;
+  height: 100vh;
+  /* background-color: red; */
+  position: relative;
+  margin: 0;
+  overflow: hidden;
 }
 
 button {
-    font: inherit;
-    background: none;
-    border-radius: 8px;
-    padding: 8px 16px;
+  font: inherit;
+  background: none;
+  border-radius: 8px;
+  padding: 8px 16px;
 }
 
 #app {
-    position: relative;
-    height: 100%;
-    max-width: 500px;
-    flex-direction: column;
-    background-color: rgba(50, 178, 253, 0.914);
-    margin: 0 auto;
+  position: relative;
+  height: 100%;
+  max-width: 500px;
+  flex-direction: column;
+  background-color: rgba(50, 178, 253, 0.914);
+  margin: 0 auto;
 }
 
 .ui {
-    z-index: 10;
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    max-width: 500px;
+  z-index: 10;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  max-width: 500px;
 }
 
 .controls {
-    display: flex;
-    height: 100%;
+  display: flex;
+  height: 100%;
 }
 
 .control-button {
-    flex: 1 0 auto;
-    opacity: 0;
+  flex: 1 0 auto;
+  opacity: 0;
+  touch-action: none;
 }
 
 .ui_lost-screen {
-    position: relative;
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .stage {
-    height: 100%;
+  height: 100%;
+}
+
+.refs {
+  position: absolute;
+  top: -10000px;
+  left: -10000px;
 }
 
 .gate {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    transform: scaleX(1.5);
-    transform-origin: top left;
-    pointer-events: none;
-    user-select: none;
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  transform: scaleX(1.5);
+  transform-origin: top left;
+  pointer-events: none;
+  user-select: none;
 }
 
 .flag {
-    width: 15px;
-    pointer-events: none;
-    user-select: none;
+  width: 15px;
+  pointer-events: none;
+  user-select: none;
 }
 
 .drone {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    pointer-events: none;
-    user-select: none;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  user-select: none;
 }
 
 .score {
-    position: fixed;
-    margin: 16px;
+  position: fixed;
+  margin: 16px;
 }
 
 .disqual_pic {
-    width: 40vh;
-    pointer-events: none;
-    user-select: none;
+  width: 40vh;
+  pointer-events: none;
+  user-select: none;
 }
 
 .spin {
-    animation: spin 1s ease-out 1;
+  animation: spin 1s ease-out 1;
 }
 
 @keyframes spin {
-    from {
-        transform: rotate(0)
-    }
+  from {
+    transform: rotate(0);
+  }
 
-    to {
-        transform: rotate(360deg)
-    }
+  to {
+    transform: rotate(360deg);
+  }
 }

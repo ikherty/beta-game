@@ -1,5 +1,5 @@
 'use strict'
-const ACCELERATION = 800 // px/s^2
+const ACCELERATION = 4000 // px/s^2
 let DRONE_MAX_SPEED = 300 // px/s
 let SCROLL_SPEED = 200
 const GATE_INTERVAL = 300
@@ -42,7 +42,7 @@ const app = new Vue({
         window.requestAnimationFrame(this.gameLoop)
     },
     mounted() {
-        const {width: gateWidth, height: gateHeight} = this.$refs.gate.getBoundingClientRect()
+        const { width: gateWidth, height: gateHeight } = this.$refs.gate.getBoundingClientRect()
         this.gate.width = gateWidth;
         this.gate.height = gateHeight;
 
@@ -58,8 +58,8 @@ const app = new Vue({
             console.log(...rest)
         },
         setDrone() {
-            const {offsetHeight: hStage, offsetWidth: wStage} = this.$refs.stage;
-            const {offsetHeight: hDrone, offsetWidth: wDrone} = this.$refs.drone;
+            const { offsetHeight: hStage, offsetWidth: wStage } = this.$refs.stage;
+            const { offsetHeight: hDrone, offsetWidth: wDrone } = this.$refs.drone;
 
             this.drone.pos.top = hStage - hDrone - 60
             this.drone.pos.left = (wStage - wDrone) / 2
@@ -92,7 +92,7 @@ const app = new Vue({
                     return this.down(stop)
             }
         },
-        moveDroneWithKeyboard(e, stop=false) {
+        moveDroneWithKeyboard(e, stop = false) {
             switch (e.code) {
                 case "ArrowUp":
                     return this.up(stop)
@@ -105,7 +105,7 @@ const app = new Vue({
             }
         },
         startAccelerate(e) {
-           return this.moveDroneWithKeyboard(e)
+            return this.moveDroneWithKeyboard(e)
         },
         stopAccelerate(e) {
             return this.moveDroneWithKeyboard(e, true)
@@ -216,6 +216,17 @@ const app = new Vue({
                 left: Math.random() * maxX,
                 checked: false
             }
+        },
+        calculateSpeed(currentSpeed, accelerationDirection, dT) {
+            const accelerationFraction =
+                accelerationDirection !== 0
+                    ? accelerationDirection
+                    : Math.sign(-currentSpeed)
+
+            const newSpeed = currentSpeed + dT * ACCELERATION * accelerationFraction;
+            const v = accelerationDirection === 0 && Math.sign(newSpeed) !== Math.sign(currentSpeed) ? 0 : newSpeed
+
+            return this.clamp(v, -MAX_SPEED, MAX_SPEED)
         },
         restart() {
             this.isStarted = true

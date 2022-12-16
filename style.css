@@ -61,16 +61,22 @@ button {
     height: 60px;
     transform: scaleX(1.5);
     transform-origin: top left;
+    pointer-events: none;
+    user-select: none;
 }
 
 .flag {
     width: 15px;
+    pointer-events: none;
+    user-select: none;
 }
 
 .drone {
     position: relative;
     width: 40px;
     height: 40px;
+    pointer-events: none;
+    user-select: none;
 }
 
 .score {

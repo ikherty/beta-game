@@ -7,13 +7,14 @@
   "author": "Valentina Petrenko",
   "license": "MIT",
   "private": true,
-  "dependencies": {
-    "prettier": "^2.8.1"
-  },
   "scripts": {
     "format": "prettier --write --ignore-unknown .",
     "prepare": "husky install",
     "postinstall": "husky install"
+  },
+  "dependencies": {
+    "prettier": "^2.8.1",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "husky": "^8.0.2",

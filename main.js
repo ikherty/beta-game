@@ -1,12 +1,16 @@
 'use strict'
-const ACCELERATION = 4000 // px/s^2
-let DRONE_MAX_SPEED = 300 // px/s
-let SCROLL_SPEED = 200
-const GATE_INTERVAL = 300
+// const ACCELERATION = 4000 // px/s^2
+// let DRONE_MAX_SPEED = 300 // px/s
+// let SCROLL_SPEED = 200
+// const GATE_INTERVAL = 300
 
 const app = new Vue({
   el: '#app',
   data: {
+    ACCELERATION: 4000, // px/s^2
+    DRONE_MAX_SPEED: 300, // px/s
+    SCROLL_SPEED: 200,
+    GATE_INTERVAL: 300,
     totalScroll: 0,
     lastObstacleSpawned: 0,
     previousTimestamp: 0,
@@ -40,6 +44,12 @@ const app = new Vue({
       }
     },
     score: 0
+  },
+  computed: {
+    droneRotateY() {
+      const rotateY = (this.drone.speed.horizontal / this.DRONE_MAX_SPEED) * 30
+      return rotateY
+    }
   },
   created() {
     window.addEventListener('keydown', this.startAccelerate)
@@ -159,21 +169,21 @@ const app = new Vue({
     upLevel() {
       switch (this.score) {
         case 10:
-          SCROLL_SPEED = 250
+          this.SCROLL_SPEED = 250
           break
         case 20:
-          SCROLL_SPEED = 300
-          DRONE_MAX_SPEED = 350
+          this.SCROLL_SPEED = 300
+          this.DRONE_MAX_SPEED = 350
           break
         case 30:
-          SCROLL_SPEED = 330
+          this.SCROLL_SPEED = 330
           break
         case 40:
-          SCROLL_SPEED = 360
-          DRONE_MAX_SPEED = 400
+          this.SCROLL_SPEED = 360
+          this.DRONE_MAX_SPEED = 400
           break
         case 50:
-          SCROLL_SPEED = 390
+          this.SCROLL_SPEED = 390
           break
       }
     },
@@ -189,10 +199,10 @@ const app = new Vue({
         const dX = dT * drone.speed.horizontal
         const dY = dT * drone.speed.vertical
 
-        const dS = dT * SCROLL_SPEED
+        const dS = dT * this.SCROLL_SPEED
         this.totalScroll += dS
 
-        if (this.totalScroll - this.lastObstacleSpawned > GATE_INTERVAL) {
+        if (this.totalScroll - this.lastObstacleSpawned > this.GATE_INTERVAL) {
           if (this.obstacles.list.length < 10) {
             this.obstacles.list.push(this.spawnObstacle())
             this.lastObstacleSpawned = this.totalScroll
@@ -245,17 +255,17 @@ const app = new Vue({
     calculateSpeed(currentSpeed, accelerationDirection, dT) {
       const accelerationFraction = accelerationDirection !== 0 ? accelerationDirection : Math.sign(-currentSpeed)
 
-      const newSpeed = currentSpeed + dT * ACCELERATION * accelerationFraction
+      const newSpeed = currentSpeed + dT * this.ACCELERATION * accelerationFraction
       const v = accelerationDirection === 0 && Math.sign(newSpeed) !== Math.sign(currentSpeed) ? 0 : newSpeed
 
-      return this.clamp(v, -DRONE_MAX_SPEED, DRONE_MAX_SPEED)
+      return this.clamp(v, -this.DRONE_MAX_SPEED, this.DRONE_MAX_SPEED)
     },
     restart() {
       this.isStarted = true
       this.isLost = false
       this.score = 0
       this.obstacles.list = []
-      SCROLL_SPEED = 200
+      this.SCROLL_SPEED = 200
       this.setDrone()
     }
   }

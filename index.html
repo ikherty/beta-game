@@ -29,12 +29,16 @@
           <button @click="restart" class="start-button" v-if="!isStarted">START</button>
         </div>
       </div>
-      <div :style="{ filter: !isStarted ? 'blur(4px)' : '' }" class="stage" ref="stage">
+      <div
+        :style="{ filter: !isStarted ? 'blur(4px)' : '', perspectiveOrigin: drone.pos.left + 'px ' + drone.pos.top + 'px' }"
+        class="stage"
+        ref="stage"
+      >
         <img
           class="drone"
           ref="drone"
           src="assets/drone.svg"
-          v-bind:style="{ top: drone.pos.top+'px', left: drone.pos.left+'px' }"
+          v-bind:style="{ top: drone.pos.top+'px', left: drone.pos.left+'px', transform: 'rotateY(' + droneRotateY + 'deg)' }"
         />
 
         <div class="obstacles">

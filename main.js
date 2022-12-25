@@ -48,8 +48,7 @@ const app = new Vue({
   },
   computed: {
     droneRotateY() {
-      const rotateY = (this.drone.speed.horizontal / this.DRONE_MAX_SPEED) * 30
-      return rotateY
+      return (this.drone.speed.horizontal / this.DRONE_MAX_SPEED) * 30
     }
   },
   created() {

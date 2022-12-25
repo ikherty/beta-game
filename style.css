@@ -1,7 +1,6 @@
 body {
   font-family: 'Zen Dots', cursive;
   height: 100vh;
-  /* background-color: red; */
   position: relative;
   margin: 0;
   overflow: hidden;
@@ -99,10 +98,14 @@ button {
   margin: 16px;
 }
 
-.disqual_pic {
+.fail-game-picture {
   width: 40vh;
   pointer-events: none;
   user-select: none;
+}
+
+.spin {
+  animation: spin 1s ease-out 1;
 }
 
 @keyframes spin {

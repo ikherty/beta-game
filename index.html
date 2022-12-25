@@ -16,6 +16,7 @@
     <div id="app">
       <div class="ui">
         <div class="score">score: {{ score }}</div>
+
         <div class="controls" v-if="isStarted">
           <button @pointerdown="moveDrone('left')" @pointerup="moveDrone('left', true)" class="control-button">
             <
@@ -25,27 +26,40 @@
           </button>
         </div>
         <div class="ui_lost-screen" v-if="!isStarted">
-          <img class="disqual_pic" src="assets/disqualified.png" v-if="isLost" />
+          <img class="fail-game-picture" src="assets/disqualified.png" v-if="isLost" />
           <button @click="restart" class="start-button" v-if="!isStarted">START</button>
         </div>
       </div>
+
       <div
-        :style="{ filter: !isStarted ? 'blur(4px)' : '', perspectiveOrigin: drone.pos.left + 'px ' + drone.pos.top + 'px' }"
+        :style="{
+          filter: !isStarted ? 'blur(4px)' : '',
+          perspectiveOrigin: `${drone.pos.left}px ${drone.pos.top}px`
+        }"
         class="stage"
         ref="stage"
       >
         <img
           class="drone"
+          :class="{ spin: isCrashed }"
           ref="drone"
           src="assets/drone.svg"
-          v-bind:style="{ top: drone.pos.top+'px', left: drone.pos.left+'px', transform: 'rotateY(' + droneRotateY + 'deg)', animation: isCrashed ? 'spin 1s ease-out 1' : '' }"
+          :style="{
+            top: drone.pos.top + 'px',
+            left: drone.pos.left + 'px',
+            transform: `rotateY(${droneRotateY}deg)`
+          }"
         />
+
         <div class="obstacles">
-          <div v-bind:key="obstacle.id" v-for="(obstacle) in obstacles.list">
+          <div :key="obstacle.id" v-for="(obstacle) in obstacles.list">
             <img
               :class="obstacle.type"
               :src="`assets/${obstacle.type}.svg`"
-              v-bind:style="{ top: obstacle.top+'px', left: obstacle.left+'px' }"
+              :style="{
+                top: `${obstacle.top}px`,
+                left: `${obstacle.left}px`
+              }"
             />
           </div>
         </div>

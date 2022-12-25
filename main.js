@@ -15,6 +15,7 @@ const app = new Vue({
     lastObstacleSpawned: 0,
     previousTimestamp: 0,
     isStarted: false,
+    isCrashed: false,
     isLost: false,
     obstacles: {
       gate: {
@@ -47,8 +48,7 @@ const app = new Vue({
   },
   computed: {
     droneRotateY() {
-      const rotateY = (this.drone.speed.horizontal / this.DRONE_MAX_SPEED) * 30
-      return rotateY
+      return (this.drone.speed.horizontal / this.DRONE_MAX_SPEED) * 30
     }
   },
   created() {
@@ -154,7 +154,8 @@ const app = new Vue({
         ) {
           switch (obstacle.type) {
             case 'flag':
-              this.failGame()
+              this.isCrashed = true
+              setTimeout(this.failGame, 1000)
               break
             case 'gate':
               if (!obstacle.checked) {
@@ -262,6 +263,7 @@ const app = new Vue({
     },
     restart() {
       this.isStarted = true
+      this.isCrashed = false
       this.isLost = false
       this.score = 0
       this.obstacles.list = []

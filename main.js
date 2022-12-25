@@ -15,6 +15,7 @@ const app = new Vue({
     lastObstacleSpawned: 0,
     previousTimestamp: 0,
     isStarted: false,
+    isAnimated: false,
     isCrashed: false,
     isLost: false,
     obstacles: {
@@ -155,6 +156,7 @@ const app = new Vue({
           switch (obstacle.type) {
             case 'flag':
               this.isCrashed = true
+              this.isAnimated = false
               setTimeout(this.failGame, 1000)
               break
             case 'gate':
@@ -191,7 +193,7 @@ const app = new Vue({
     gameLoop(timestamp) {
       const dT = (timestamp - this.previousTimestamp) / 1000
 
-      if (this.isStarted) {
+      if (this.isAnimated) {
         const drone = this.drone
 
         drone.speed.horizontal = this.calculateSpeed(drone.speed.horizontal, drone.acceleration.horizontal, dT)
@@ -251,6 +253,7 @@ const app = new Vue({
     },
     failGame() {
       this.isStarted = false
+      this.isAnimated = false
       this.isLost = true
     },
     calculateSpeed(currentSpeed, accelerationDirection, dT) {
@@ -263,6 +266,7 @@ const app = new Vue({
     },
     restart() {
       this.isStarted = true
+      this.isAnimated = true
       this.isCrashed = false
       this.isLost = false
       this.score = 0

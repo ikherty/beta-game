@@ -15,7 +15,11 @@
   <body>
     <div id="app">
       <div class="ui">
-        <div class="score">score: {{ score }}</div>
+        <div class="score">
+          score: {{ score }}
+          <!-- <img class="drone" ref="drone" src="assets/drone.svg" v-bind:style="{ animation: isCrashed ? 'spin 1s ease-out 1' : ''}"> -->
+        </div>
+
         <div class="controls" v-if="isStarted">
           <button @pointerdown="moveDrone('left')" @pointerup="moveDrone('left', true)" class="control-button">
             <
@@ -29,6 +33,7 @@
           <button @click="restart" class="start-button" v-if="!isStarted">START</button>
         </div>
       </div>
+
       <div
         :style="{ filter: !isStarted ? 'blur(4px)' : '', perspectiveOrigin: drone.pos.left + 'px ' + drone.pos.top + 'px' }"
         class="stage"
@@ -38,7 +43,7 @@
           class="drone"
           ref="drone"
           src="assets/drone.svg"
-          v-bind:style="{ top: drone.pos.top+'px', left: drone.pos.left+'px', transform: 'rotateY(' + droneRotateY + 'deg)' }"
+          v-bind:style="{ top: drone.pos.top+'px', left: drone.pos.left+'px', transform: 'rotateY(' + droneRotateY + 'deg)', animation: isCrashed ? 'spin 1s ease-out 1' : '' }"
         />
 
         <div class="obstacles">

@@ -79,8 +79,9 @@ button {
 }
 
 .flag {
-  width: 15px;
-  height: 120px;
+  width: 60px;
+  height: 40px;
+  transform: scaleX(1.5);
   filter: drop-shadow(3px 5px 2px rgba(221, 13, 13, 0.4));
 }
 
@@ -102,10 +103,6 @@ button {
   width: 40vh;
   pointer-events: none;
   user-select: none;
-}
-
-.spin {
-  animation: spin 1s ease-out 1;
 }
 
 @keyframes spin {

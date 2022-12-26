@@ -63,7 +63,7 @@ button {
 }
 
 .gate,
-.flag {
+.obstacle {
   position: absolute;
   transform-origin: top left;
   pointer-events: none;
@@ -77,7 +77,7 @@ button {
   filter: drop-shadow(3px 5px 2px rgba(4, 177, 4, 0.4));
 }
 
-.flag {
+.obstacle {
   width: 60px;
   height: 40px;
   transform: scaleX(1.5);

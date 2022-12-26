@@ -1,8 +1,4 @@
 'use strict'
-// const ACCELERATION = 4000 // px/s^2
-// let DRONE_MAX_SPEED = 300 // px/s
-// let SCROLL_SPEED = 200
-// const GATE_INTERVAL = 300
 
 const app = new Vue({
   el: '#app',
@@ -23,11 +19,11 @@ const app = new Vue({
         width: 0,
         height: 0
       },
-      flag: {
+      obstacle: {
         width: 0,
         height: 0
       },
-      // type Obstacle = { type: 'gate' | 'flag', top: number, left: number, checked:boolean }
+      // type Obstacle = { type: 'gate' | 'obstacle', top: number, left: number, checked:boolean }
       // type ObstacleList = Array<Obstacle>
       list: []
     },
@@ -60,16 +56,16 @@ const app = new Vue({
     window.requestAnimationFrame(this.gameLoop)
   },
   mounted() {
-    const { gate: gateRef, flag: flagRef } = this.$refs
-    const { flag, gate } = this.obstacles
+    const { gate: gateRef, obstacle: obstacleRef } = this.$refs
+    const { obstacle, gate } = this.obstacles
 
     const { width: gateWidth, height: gateHeight } = gateRef.getBoundingClientRect()
     gate.width = gateWidth
     gate.height = gateHeight
 
-    const { width: flagWidth, height: flagHeight } = flagRef.getBoundingClientRect()
-    flag.width = flagWidth
-    flag.height = flagHeight
+    const { width: obstacleWidth, height: obstacleHeight } = obstacleRef.getBoundingClientRect()
+    obstacle.width = obstacleWidth
+    obstacle.height = obstacleHeight
 
     this.setDrone()
   },
@@ -154,7 +150,7 @@ const app = new Vue({
           obstacle.top + this.obstacles[obstacle.type].height >= droneCenterVertical
         ) {
           switch (obstacle.type) {
-            case 'flag':
+            case 'obstacle':
               this.isCrashed = true
               this.isAnimated = false
               setTimeout(this.failGame, 1000)
@@ -239,7 +235,7 @@ const app = new Vue({
       return param
     },
     spawnObstacle() {
-      const obstacleType = Math.random() > 0.5 ? 'gate' : 'flag'
+      const obstacleType = Math.random() > 0.5 ? 'gate' : 'obstacle'
 
       const maxX = this.$refs.stage.offsetWidth - this.obstacles[obstacleType].width
 
@@ -252,9 +248,9 @@ const app = new Vue({
       }
     },
     failGame() {
-      this.isStarted = false
-      this.isAnimated = false
-      this.isLost = true
+      // this.isStarted = false
+      // this.isAnimated = false
+      // this.isLost = true
     },
     calculateSpeed(currentSpeed, accelerationDirection, dT) {
       const accelerationFraction = accelerationDirection !== 0 ? accelerationDirection : Math.sign(-currentSpeed)

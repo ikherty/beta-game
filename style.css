@@ -104,6 +104,10 @@ button {
   user-select: none;
 }
 
+.spin {
+  animation: spin 1s ease-out 1;
+}
+
 @keyframes spin {
   from {
     transform: rotate(0);

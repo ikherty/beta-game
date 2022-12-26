@@ -26,7 +26,8 @@
           </button>
         </div>
         <div class="ui_lost-screen" v-if="!isStarted">
-          <img class="fail-game-picture" src="assets/disqualified.png" v-if="isLost" />
+          <img class="fail-game-picture" src="assets/disqualified.png" v-if="isLost && !isCrashed" />
+          <img class="fail-game-picture" src="assets/crash.png" v-if="isLost && isCrashed" />
           <button @click="restart" class="start-button" v-if="!isStarted">START</button>
         </div>
       </div>

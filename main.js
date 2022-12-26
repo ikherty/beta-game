@@ -18,6 +18,7 @@ const app = new Vue({
     isAnimated: false,
     isCrashed: false,
     isLost: false,
+    developerMode: false,
     obstacles: {
       gate: {
         width: 0,
@@ -156,7 +157,6 @@ const app = new Vue({
           switch (obstacle.type) {
             case 'flag':
               this.isCrashed = true
-              this.isAnimated = false
               setTimeout(this.failGame, 1000)
               break
             case 'gate':
@@ -252,9 +252,11 @@ const app = new Vue({
       }
     },
     failGame() {
-      this.isStarted = false
-      this.isAnimated = false
-      this.isLost = true
+      if (!this.developerMode) {
+        this.isStarted = false
+        this.isAnimated = false
+        this.isLost = true
+      }
     },
     calculateSpeed(currentSpeed, accelerationDirection, dT) {
       const accelerationFraction = accelerationDirection !== 0 ? accelerationDirection : Math.sign(-currentSpeed)

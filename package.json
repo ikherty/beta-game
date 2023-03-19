@@ -18,11 +18,13 @@
     "yarn": "^1.22.19"
   },
   "devDependencies": {
+    "http-server": "^14.1.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
-    "http-server": "^14.1.1"
+    "svgo": "^3.0.2"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "**/*": "prettier --write --ignore-unknown",
+    "**/*.svg": "svgo --input"
   }
 }

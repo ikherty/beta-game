@@ -8,6 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "serve": "http-server -p 8080 .",
     "format": "prettier --write --ignore-unknown .",
     "prepare": "husky install",
     "postinstall": "husky install"
@@ -18,7 +19,8 @@
   },
   "devDependencies": {
     "husky": "^8.0.2",
-    "lint-staged": "^13.1.0"
+    "lint-staged": "^13.1.0",
+    "http-server": "^14.1.1"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

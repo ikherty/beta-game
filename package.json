@@ -13,11 +13,9 @@
     "prepare": "husky install",
     "postinstall": "husky install"
   },
-  "dependencies": {
-    "prettier": "^2.8.4",
-    "yarn": "^1.22.19"
-  },
   "devDependencies": {
+    "yarn": "^1.22.19",
+    "prettier": "^2.8.4",
     "http-server": "^14.1.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",

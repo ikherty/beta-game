@@ -41,6 +41,7 @@ button {
 }
 
 .control-button {
+  user-select: none;
   flex: 1 0 auto;
   opacity: 0;
   touch-action: none;

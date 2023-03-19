@@ -14,12 +14,13 @@
     "postinstall": "husky install"
   },
   "devDependencies": {
-    "yarn": "^1.22.19",
-    "prettier": "^2.8.4",
     "http-server": "^14.1.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
-    "svgo": "^3.0.2"
+    "optipng": "^4.2.0",
+    "prettier": "^2.8.4",
+    "svgo": "^3.0.2",
+    "yarn": "^1.22.19"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
